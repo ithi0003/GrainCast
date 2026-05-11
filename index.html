@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrainCast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero" id="top">
+      <div class="brand-row">
+        <p class="brand-name">GrainCast</p>
+        <nav class="page-nav" aria-label="Page sections">
+          <a href="#map-section">Map</a>
+          <a href="#predictions">Predictions</a>
+          <a href="#historical-data">Historical Data</a>
+          <a href="help.html">Help</a>
+        </nav>
+      </div>
+      <h1 class="hero-subtitle">Wheat planning with forecast and station comparison in one place.</h1>
+    </header>
+
+    <main class="dashboard">
+      <section class="panel map-panel" id="map-section">
+        <div class="panel-header">
+          <div>
+            <p class="section-label">Map</p>
+            <h2 class="panel-title section-heading">Weather stations across Australia</h2>
+          </div>
+        </div>
+        <p class="prompt-text">Please select your primary location, up to two secondary locations, and a wheat type to begin.</p>
+        <p id="map-description" class="assistive-description"></p>
+        <div class="map-selection-grid">
+          <div class="control-group">
+            <label for="forecast-location">Primary location</label>
+            <select id="forecast-location"></select>
+          </div>
+          <div class="control-group">
+            <label for="compare-one">Secondary location 1</label>
+            <select id="compare-one"></select>
+          </div>
+          <div class="control-group">
+            <label for="compare-two">Secondary location 2</label>
+            <select id="compare-two"></select>
+          </div>
+          <div class="control-group">
+            <label for="crop-select">Wheat type</label>
+            <select id="crop-select"></select>
+          </div>
+        </div>
+        <div class="map-grid">
+          <div id="station-map" class="station-map" aria-label="Australian weather station map"></div>
+          <div id="map-legend" class="map-legend"></div>
+        </div>
+        <div class="section-nav-row">
+          <a class="section-jump" href="#predictions">Go to Predictions</a>
+        </div>
+      </section>
+
+      <section class="panel outlook-panel" id="predictions">
+        <div class="panel-header">
+          <div>
+            <p class="section-label">Predictions</p>
+            <h2 id="outlook-heading" class="panel-title section-heading">7-day outlook</h2>
+          </div>
+          <p id="selected-date-label" class="muted-text"></p>
+        </div>
+
+        <div class="recommendation-card recommendation-card--hero">
+          <p class="section-label">Recommendation</p>
+          <p id="recommendation-text" class="recommendation-text"></p>
+        </div>
+
+        <div class="slider-wrap">
+          <label for="date-slider">Prediction start date</label>
+          <input id="date-slider" type="range" min="0" max="364" step="1" value="0">
+          <div class="slider-legend">
+            <span id="range-start">Now</span>
+            <span id="range-end">End of forecast</span>
+          </div>
+        </div>
+
+        <div id="weekly-stats" class="stats-grid"></div>
+        <div class="section-nav-row">
+          <a class="section-jump" href="#map-section">Go to Map</a>
+          <a class="section-jump" href="#historical-data">Go to Historical Data</a>
+        </div>
+      </section>
+
+      <section class="panel history-panel" id="historical-data">
+        <div class="panel-header">
+          <div>
+            <p class="section-label">Historical Data</p>
+            <h2 class="panel-title section-heading">Compare the primary location with two secondary locations</h2>
+          </div>
+        </div>
+
+        <div class="history-controls">
+          <div class="control-group">
+            <label for="history-metric">Historical metric</label>
+            <select id="history-metric"></select>
+          </div>
+          <div class="control-group" id="temperature-mode-group">
+            <label for="temperature-mode">Temperature view</label>
+            <select id="temperature-mode"></select>
+          </div>
+          <div class="control-group">
+            <label for="history-start">Please select a start date</label>
+            <select id="history-start"></select>
+          </div>
+          <div class="control-group">
+            <label for="history-end">Please select an end date</label>
+            <select id="history-end"></select>
+          </div>
+        </div>
+
+        <p id="history-description" class="assistive-description"></p>
+        <div id="history-chart" class="chart-surface" aria-label="Historical comparison chart"></div>
+        <div class="section-nav-row">
+          <a class="section-jump" href="#map-section">Go to Map</a>
+          <a class="section-jump" href="#predictions">Go to Predictions</a>
+          <a class="section-jump" href="#top">Back to top</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="hover-tooltip" class="hover-tooltip" role="status" aria-live="polite"></div>
+
+  <script src="forecast-data.js"></script>
+  <script src="historical-data.js"></script>
+  <script src="map-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -28,25 +28,36 @@ const TEMPERATURE_MODES = {
   max: { label: "Max temp" }
 };
 
+const MAP_PROJECTION = {
+  west: 112.9,
+  east: 153.7,
+  north: -10.7,
+  south: -43.7,
+  left: 0,
+  right: 449,
+  top: 0,
+  bottom: 420
+};
+
 const STATION_COORDS = {
-  "8297": { x: 96, y: 134 },
-  "10092": { x: 125, y: 152 },
-  "10111": { x: 132, y: 170 },
-  "18083": { x: 161, y: 194 },
-  "22050": { x: 190, y: 208 },
-  "25509": { x: 226, y: 226 },
-  "41100": { x: 311, y: 111 },
-  "41522": { x: 314, y: 139 },
-  "41529": { x: 311, y: 150 },
-  "53115": { x: 300, y: 173 },
-  "54038": { x: 307, y: 181 },
-  "73142": { x: 283, y: 206 },
-  "76047": { x: 255, y: 224 },
-  "79100": { x: 266, y: 221 },
-  "80128": { x: 274, y: 212 },
-  "91311": { x: 280, y: 267 },
-  "91375": { x: 279, y: 272 },
-  "93036": { x: 286, y: 276 }
+  "8297": { lat: -30.278, lon: 116.661 },
+  "10092": { lat: -31.482, lon: 118.279 },
+  "10111": { lat: -31.654, lon: 116.671 },
+  "18083": { lat: -33.049, lon: 135.461 },
+  "22050": { lat: -33.965, lon: 137.716 },
+  "25509": { lat: -35.330, lon: 140.518 },
+  "41100": { lat: -28.854, lon: 151.168 },
+  "41522": { lat: -27.183, lon: 151.263 },
+  "41529": { lat: -27.561, lon: 151.953 },
+  "53115": { lat: -29.465, lon: 149.841 },
+  "54038": { lat: -30.325, lon: 149.782 },
+  "73142": { lat: -34.640, lon: 148.025 },
+  "76047": { lat: -35.071, lon: 142.317 },
+  "79100": { lat: -36.718, lon: 142.196 },
+  "80128": { lat: -36.269, lon: 143.352 },
+  "91311": { lat: -41.433, lon: 147.144 },
+  "91375": { lat: -41.685, lon: 147.078 },
+  "93036": { lat: -41.929, lon: 147.493 }
 };
 
 const forecastData = window.FORECAST_DATA;
@@ -362,7 +373,7 @@ function renderMap() {
         <path d="${stateShape.path}" fill="#0c3158" opacity="0.26" stroke="none"></path>
       `).join("")}
       ${mapData.states.map((stateShape) => `
-        <path d="${stateShape.path}" fill="none" stroke="#5ea8ff" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" data-tooltip="${stateShape.name}"></path>
+        <path d="${stateShape.path}" fill="none" stroke="#8fc7ff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" data-tooltip="${stateShape.name}"></path>
       `).join("")}
       ${stationList.map((station) => renderStationMarker(station, colorLookup)).join("")}
     </svg>
@@ -378,11 +389,12 @@ function renderMap() {
 }
 
 function renderStationMarker(station, colorLookup) {
-  const point = STATION_COORDS[String(station.stationNumber)];
-  if (!point) {
+  const stationPoint = STATION_COORDS[String(station.stationNumber)];
+  if (!stationPoint) {
     return "";
   }
 
+  const point = projectStationPoint(stationPoint);
   const marker = colorLookup.get(String(station.stationNumber));
   if (!marker) {
     return `
@@ -404,6 +416,21 @@ function renderStationMarker(station, colorLookup) {
     <circle cx="${point.x}" cy="${point.y}" r="7" fill="${marker.color}" stroke="#06203b" stroke-width="2"
       data-tooltip="${station.stationName}, ${station.state} • Station ${station.stationNumber}"></circle>
   `;
+}
+
+function projectStationPoint(point) {
+  const x = MAP_PROJECTION.left +
+    ((point.lon - MAP_PROJECTION.west) / (MAP_PROJECTION.east - MAP_PROJECTION.west)) *
+      (MAP_PROJECTION.right - MAP_PROJECTION.left);
+
+  const y = MAP_PROJECTION.top +
+    ((point.lat - MAP_PROJECTION.north) / (MAP_PROJECTION.south - MAP_PROJECTION.north)) *
+      (MAP_PROJECTION.bottom - MAP_PROJECTION.top);
+
+  return {
+    x: Number(x.toFixed(1)),
+    y: Number(y.toFixed(1))
+  };
 }
 
 function buildStationColorLookup(primary, secondaryStations) {
